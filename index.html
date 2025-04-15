@@ -262,7 +262,68 @@
     </button>
 
     <script>
-        // Codice JavaScript completo (vedi risposta precedente)
+        document.addEventListener("DOMContentLoaded", function () {
+    // Gestione pulsante cerca
+    const searchBtn = document.getElementById("search-btn");
+    const usernameInput = document.getElementById("username");
+    const notification = document.getElementById("notification");
+    const skin2D = document.getElementById("skin-head");
+    const skinFull = document.getElementById("skin-full");
+    const capeImg = document.getElementById("cape-img");
+
+    searchBtn.addEventListener("click", function () {
+        const username = usernameInput.value.trim();
+        if (username === "") {
+            showNotification("Inserisci un username valido!");
+            return;
+        }
+
+        // Esempio di caricamento skin
+        const skinURL = `https://crafatar.com/skins/${username}`;
+        const capeURL = `https://crafatar.com/capes/${username}`;
+
+        skin2D.src = skinURL;
+        skinFull.src = skinURL;
+        capeImg.src = capeURL;
+
+        showNotification("Skin caricata con successo!");
+    });
+
+    // Gestione pulsanti di download
+    document.getElementById("download-head").addEventListener("click", function () {
+        downloadImage(skin2D.src, "skin-head.png");
+    });
+
+    document.getElementById("download-skin").addEventListener("click", function () {
+        downloadImage(skinFull.src, "skin-full.png");
+    });
+
+    document.getElementById("download-cape").addEventListener("click", function () {
+        downloadImage(capeImg.src, "cape.png");
+    });
+
+    // Gestione modalità notte
+    const darkModeToggle = document.getElementById("dark-mode-toggle");
+    darkModeToggle.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+        const isDarkMode = document.body.classList.contains("dark-mode");
+        showNotification(isDarkMode ? "Modalità notte attivata!" : "Modalità giorno attivata!");
+    });
+
+    // Funzioni di supporto
+    function showNotification(message) {
+        notification.textContent = message;
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 3000);
+    }
+
+    function downloadImage(url, filename) {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        link.click();
+    }
+});
         // Includi qui tutto lo script della risposta precedente
     </script>
 </body>
