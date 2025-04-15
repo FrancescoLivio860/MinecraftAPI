@@ -689,39 +689,39 @@
         }
 
         async function loadPlayer(identifier) {
-            try {
-                // Verifica se è un UUID o username
-                const isUuid = identifier.length === 32 || identifier.length === 36;
-                let uuid, username;
+    try {
+        const isUuid = identifier.length === 32 || identifier.length === 36;
+        let uuid, username;
 
-                if (isUuid) {
-                    uuid = identifier.replace(/-/g, '');
-                    // Prova a ottenere il nome dall'UUID
-                    const nameResponse = await fetch(`https://api.mojang.com/user/profile/${uuid}`);
-                    if (nameResponse.ok) {
-                        const data = await nameResponse.json();
-                        username = data.name;
-                    }
-                } else {
-                    // Ottieni UUID dall'username
-                    const uuidResponse = await fetch(`https://api.mojang.com/users/profiles/minecraft/${identifier}`);
-                    if (!uuidResponse.ok) throw new Error('Giocatore non trovato!');
-                    
-                    const data = await uuidResponse.json();
-                    uuid = data.id;
-                    username = data.name;
-                }
-
-                if (!uuid) throw new Error('Impossibile ottenere i dati del giocatore');
-
-                currentUuid = uuid;
-                updatePlayerInfo(username, uuid);
-                loadSkinData(uuid);
-                loadSkinHistory(uuid); // Simulato
-
-            } catch (error) {
-                throw error;
+        if (isUuid) {
+            uuid = identifier.replace(/-/g, '');
+            const nameResponse = await fetch(`https://api.mojang.com/user/profile/${uuid}`);
+            if (!nameResponse.ok) {
+                throw new Error('Giocatore non trovato con questo UUID!');
             }
+            const data = await nameResponse.json();
+            username = data.name;
+        } else {
+            const uuidResponse = await fetch(`https://api.mojang.com/users/profiles/minecraft/${identifier}`);
+            if (!uuidResponse.ok) {
+                throw new Error('Giocatore non trovato con questo username!');
+            }
+            const data = await uuidResponse.json();
+            uuid = data.id;
+            username = data.name;
+        }
+
+        if (!uuid) throw new Error('Impossibile ottenere i dati del giocatore');
+
+        currentUuid = uuid;
+        updatePlayerInfo(username, uuid);
+        loadSkinData(uuid);
+        loadSkinHistory(uuid);
+    } catch (error) {
+        showNotification(`Errore: ${error.message}`, true);
+        console.error('Errore durante il caricamento del giocatore:', error.message);
+    }
+}
         }
 
         function updatePlayerInfo(name, uuid) {
